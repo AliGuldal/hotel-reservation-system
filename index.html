@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Otel Samba Rezervasyon Sistemi</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+
+        <h1 class="text-center my-4">Otel Samba Rezervasyon Sistemi</h1>
+        <p class="slogan text-center">Hayalinizdeki tatil, bir tık uzağınızda!</p>
+        
+        <div id="loginPanel" class="text-center mb-4">
+            <input type="text" id="kullaniciAd" placeholder="Kullanıcı Adı" class="form-control mb-2 w-50 d-inline-block">
+            <input type="password" id="kullaniciSifre" placeholder="Şifre" class="form-control mb-2 w-50 d-inline-block">
+            <button id="loginBtn" class="btn btn-primary">Giriş Yap</button>
+            <button id="logoutBtn" class="btn btn-danger" style="display:none;">Çıkış Yap</button>
+            <button id="registerBtn" class="btn btn-secondary">Kayıt Ol</button>
+        </div>
+
+        <section class="oda-gorunumleri mt-5">
+            <h2 class="section-title">Oda Tipleri ve Fiyatları</h2>
+            <div class="oda-kartlar">
+                <div class="oda-kart">
+                    <img src="resimler/download.jpg" alt="Tek Kişilik Oda">
+                    <h3>Tek Kişilik</h3>
+                    <p>₺1000 / Gece</p>
+                </div>
+                <div class="oda-kart">
+                    <img src="resimler/download (1).jpg" alt="Çift Kişilik Oda">
+                    <h3>Çift Kişilik</h3>
+                    <p>₺1500 / Gece</p>
+                </div>
+                <div class="oda-kart">
+                    <img src="resimler/81b74ede-5bd3-42e3-b64c-bdfa2d0296a5.jpg" alt="Suite">
+                    <h3>Suite</h3>
+                    <p>₺2500 / Gece</p>
+                </div>
+            </div>
+        </section>
+
+        <h2 class="section-title mt-5">Rezervasyon Yap</h2>
+        <div class="alert alert-success mt-4" id="onayGosterge" style="display:none;">
+            <strong>Rezervasyon Başarılı!</strong> Onay Kodunuz: <span id="onayKodu"></span>
+        </div>
+        
+        <form id="rezervasyonForm" style="display:none;">
+            <input type="text" id="ad" placeholder="Ad Soyad" required class="form-control">
+            <input type="email" id="email" placeholder="E-posta" required class="form-control">
+            
+            <div class="row">
+                <div class="col-md-6 filtre-grup">
+                    <label for="girisTarihi">Giriş Tarihi</label>
+                    <input type="date" id="girisTarihi" required class="form-control">
+                </div>
+                <div class="col-md-6 filtre-grup">
+                    <label for="cikisTarihi">Çıkış Tarihi</label>
+                    <input type="date" id="cikisTarihi" required class="form-control">
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 filtre-grup">
+                    <label for="odaTipi">Oda Tipi</label>
+                    <select id="odaTipi" class="form-control">
+                        <option value="tek">Tek Kişilik</option>
+                        <option value="cift">Çift Kişilik</option>
+                        <option value="suite">Suite</option>
+                    </select>
+                </div>
+                <div class="col-md-6 filtre-grup">
+                    <label for="odaSecimi">Müsait Odalar</label>
+                    <select id="odaSecimi" class="form-control">
+                        <option value="">Oda Seç</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="ozellik-secimleri mt-3 mb-4">
+                <h4 class="mb-3">Ek Özellikler (Fiyat Çarpanı Uygulanır)</h4>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="ozellikDeniz" class="form-check-input">
+                    <label class="form-check-label" for="ozellikDeniz">Deniz Manzaralı</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="ozellikBalkon" class="form-check-input">
+                    <label class="form-check-label" for="ozellikBalkon">Balkon</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="ozellikSigara" class="form-check-input">
+                    <label class="form-check-label" for="ozellikSigara">Sigara İçilir</label>
+                </div>
+            </div>
+
+            <div class="ek-hizmetler-secimleri mt-4 mb-4">
+                <h4 class="mb-3">Ek Hizmetler (Ücrete Tabidir)</h4>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="hizmetKahvalti" class="form-check-input" data-fiyat="150">
+                    <label class="form-check-label" for="hizmetKahvalti">Kahvaltı (+₺150/kişi)</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="hizmetTransfer" class="form-check-input" data-fiyat="400">
+                    <label class="form-check-label" for="hizmetTransfer">Havalimanı Transferi (+₺400)</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input type="checkbox" id="hizmetMiniBar" class="form-check-input" data-fiyat="100">
+                    <label class="form-check-label" for="hizmetMiniBar">Premium Mini Bar (+₺100/gece)</label>
+                </div>
+            </div>
+            <input type="text" id="promosyonKodu" placeholder="Promosyon Kodu (Opsiyonel)" class="form-control">
+            
+            <div class="alert mt-3" id="anlikFiyatGosterge" style="display:none;">
+                <strong>Tahmini Toplam Fiyat:</strong> <span id="tahminiFiyat">₺0.00</span>
+            </div>
+
+            <div id="odemePanel" class="odeme-panel-box p-4 mt-4">
+                <h4>Ödeme Bilgileri (Simülasyon)</h4>
+                <p class="kart-destek-info mb-3">Kabul edilen kartlar: Visa, Mastercard.</p> 
+                <input type="text" id="kartNo" placeholder="Kart Numarası (16 Hane)" required class="form-control" maxlength="16">
+                <div class="form-row">
+                    <div class="col-6">
+                        <input type="text" id="sonKullanma" placeholder="AA/YY" required class="form-control" maxlength="5">
+                    </div>
+                    <div class="col-6">
+                        <input type="text" id="cvc" placeholder="CVC (3/4 Hane)" required class="form-control" maxlength="4">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success btn-block mt-4">Ödemeyi Tamamla ve Rezervasyon Yap</button>
+        </form>
+
+        <section class="mt-5">
+            <h2 class="section-title">Oda Doluluk Takvimi</h2>
+            
+            <div id="takvimSecenekleri" class="row justify-content-center filtre-alani">
+                
+                <div class="col-auto filtre-grup">
+                    <label for="takvimOdaTipi">Oda Tipi</label>
+                    <select id="takvimOdaTipi" class="form-control">
+                        <option value="tek">Tek Kişilik</option>
+                        <option value="cift">Çift Kişilik</option>
+                        <option value="suite">Suite</option>
+                    </select>
+                </div>
+                
+                <div class="col-auto filtre-grup">
+                    <label for="takvimOdaNo">Oda No</label>
+                    <select id="takvimOdaNo" class="form-control">
+                        <option value="">Tüm Odalar</option>
+                    </select>
+                </div>
+            </div>
+            <div id="takvim" class="takvim-container mt-3"></div>
+        </section>
+
+        <div id="kullaniciRezervasyonlar" class="mt-5" style="display:none;">
+            <h2 class="section-title">Rezervasyonlarım</h2>
+            <ul id="kullaniciRezList" class="list-group"></ul>
+        </div>
+
+        <div id="adminRaporPanel" class="mt-5" style="display:none;">
+            <h2 class="section-title">Admin Raporu</h2>
+            <div class="row mb-4">
+                <div class="col-md-4"><p><strong>Toplam Gelir:</strong> <span id="raporToplamGelir" class="text-success font-weight-bold"></span></p></div>
+                <div class="col-md-4"><p><strong>Toplam Rezervasyon Sayısı:</strong> <span id="raporRezSayisi" class="text-primary font-weight-bold"></span></p></div>
+                <div class="col-md-4"><p><strong>En Çok Rezerve Edilen Oda Tipi:</strong> <span id="raporEnCokOdaTip" class="text-info font-weight-bold"></span></p></div>
+            </div>
+
+            <h3>Tüm Rezervasyonlar</h3>
+            <div class="table-responsive">
+                <table id="adminRezervasyonTablosu" class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Ad Soyad</th>
+                            <th>Giriş</th>
+                            <th>Çıkış</th>
+                            <th>Oda Bilgisi</th>
+                            <th>Fiyat</th>
+                            <th>Onay Kodu</th> <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminRezervasyonTabloBody"></tbody> 
+                </table>
+            </div>
+        </div>
+        </div>
+
+    <div class="modal fade" id="popupModal" tabindex="-1" role="dialog" aria-labelledby="popupModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="popupModalTitle"></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="popupModalBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Kapat</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="confirmModalLabel">Onay Gerekli</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="confirmModalBody"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">İptal</button>
+                    <button type="button" class="btn btn-danger" id="confirmBtn">Onayla</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Yeni Üyelik</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="registerForm">
+                        <div class="form-group">
+                            <input type="text" id="regUsername" placeholder="Kullanıcı Adı" required class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" id="regPassword" placeholder="Şifre" required class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Hesap Oluştur</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Rezervasyonu Düzenle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editForm">
+                        <div class="row">
+                            <div class="col-md-6 filtre-grup">
+                                <label for="editGirisTarihi">Giriş Tarihi</label>
+                                <input type="date" id="editGirisTarihi" required class="form-control">
+                            </div>
+                            <div class="col-md-6 filtre-grup">
+                                <label for="editCikisTarihi">Çıkış Tarihi</label>
+                                <input type="date" id="editCikisTarihi" required class="form-control">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 filtre-grup">
+                                <label for="editOdaTipi">Oda Tipi</label>
+                                <select id="editOdaTipi" class="form-control">
+                                    <option value="tek">Tek Kişilik</option>
+                                    <option value="cift">Çift Kişilik</option>
+                                    <option value="suite">Suite</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 filtre-grup">
+                                <label for="editOdaSecimi">Oda Numarası</label>
+                                <select id="editOdaSecimi" class="form-control">
+                                    <option value="">Oda Seç</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="ozellik-secimleri mt-3 mb-4">
+                            <h4 class="mb-3">Ek Özellikler</h4>
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" id="editOzellikDeniz" class="form-check-input">
+                                <label class="form-check-label" for="editOzellikDeniz">Deniz Manzaralı</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" id="editOzellikBalkon" class="form-check-input">
+                                <label class="form-check-label" for="editOzellikBalkon">Balkon</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" id="editOzellikSigara" class="form-check-input">
+                                <label class="form-check-label" for="editOzellikSigara">Sigara İçilir</label>
+                            </div>
+                        </div>
+
+                        <div class="ek-hizmetler-secimleri mt-4 mb-4">
+                            <h4 class="mb-3">Ek Hizmetler (Düzenleme)</h4>
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" id="editHizmetKahvalti" class="form-check-input">
+                                <label class="form-check-label" for="editHizmetKahvalti">Kahvaltı</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" id="editHizmetTransfer" class="form-check-input">
+                                <label class="form-check-label" for="editHizmetTransfer">Transfer</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input type="checkbox" id="editHizmetMiniBar" class="form-check-input">
+                                <label class="form-check-label" for="editHizmetMiniBar">Mini Bar</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block">Güncellemeyi Kaydet</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>
