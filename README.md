@@ -23,9 +23,14 @@ https://kullaniciadi.github.io/otel-samba-reservation/
 - Admin → admin / admin
 
 ## Ekran Görüntüleri
-![1](screenshots/1.png)
-![2](screenshots/2.png)
-![3](screenshots/3.png)
+<img width="1906" height="911" alt="image" src="https://github.com/user-attachments/assets/797735e2-4244-4740-8482-095ec604a5b1" />
+
+<img width="1897" height="910" alt="image" src="https://github.com/user-attachments/assets/528ec278-2895-4a01-830b-1369d720af80" />
+
+<img width="1904" height="811" alt="image" src="https://github.com/user-attachments/assets/b860c7d2-0612-4666-ad0e-92c04432ff21" />
+
+<img width="1897" height="601" alt="image" src="https://github.com/user-attachments/assets/bf5794fc-cf37-482c-90da-e2253bd7be14" />
+
 
 ## Teknolojiler
 - HTML5
@@ -33,4 +38,4 @@ https://kullaniciadi.github.io/otel-samba-reservation/
 - Vanilla JavaScript
 - localStorage
 
-Stajda boş vakitlerimde geliştirdim. Şu an şirketin gerçek rezervasyon sisteminden daha iyi çalışıyor
+Stajda boş vakitlerimde geliştirdim.
