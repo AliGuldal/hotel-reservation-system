@@ -16,7 +16,7 @@
 - Tüm veriler localStorage'da tutuluyor (backend gerekmez)
 
 ## Canlı Demo
-https://AliGuldal.github.io/otel-samba-reservation/
+[https://AliGuldal.github.io/otel-samba-reservation/](https://aliguldal.github.io/hotel-reservation-system/)
 
 ## Kullanıcılar
 - Normal kullanıcı → user1 / 1234  
