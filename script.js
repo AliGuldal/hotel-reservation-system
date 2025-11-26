@@ -16,11 +16,10 @@ const fiyatlar = {
     suite: 2500
 };
 
-// Yeni: Ek hizmetlerin tek seferlik veya günlük fiyatları
 const ekHizmetlerFiyatlari = {
-    kahvalti: 150, // Kişi/gün
-    transfer: 400, // Tek seferlik
-    miniBar: 100 // Günlük
+    kahvalti: 150, 
+    transfer: 400, 
+    miniBar: 100 
 }
 
 const ozellikCarpanlari = {
@@ -30,12 +29,12 @@ const ozellikCarpanlari = {
 };
 
 const haftaSonuZamOrani = 0.20; 
-const sezonZamOrani = 0.50; // Yeni: Temmuz (6), Ağustos (7) ayları için
+const sezonZamOrani = 0.50; 
 const usersKey = "otel_users";
 const currentUserKey = "otel_current_user";
 const rezervasyonlarKey = "rezervasyonlar";
 
-// Local Storage'da kullanıcı yoksa varsayılanları adSoyad ve email ile ekle
+
 if (!localStorage.getItem(usersKey)) {
     localStorage.setItem(usersKey, JSON.stringify([
         { username: "admin", password: "admin", adSoyad: "Sistem Yöneticisi", email: "admin@samba.com" },
@@ -48,71 +47,56 @@ let currentTakvimAy = new Date().getMonth();
 let currentTakvimYil = new Date().getFullYear();
 
 
-// ====================================================================
-// DOM ELEMENT ÖN TANIMLAMALARI (Geliştirildi)
-// ====================================================================
+
 const DOM = {
-    // Giriş/Çıkış
     loginBtn: document.getElementById("loginBtn"),
     logoutBtn: document.getElementById("logoutBtn"),
     registerBtn: document.getElementById("registerBtn"),
     registerForm: document.getElementById("registerForm"),
     
-    // Rezervasyon Formu
     rezervasyonForm: document.getElementById("rezervasyonForm"),
     girisTarihiInput: document.getElementById("girisTarihi"),
     cikisTarihiInput: document.getElementById("cikisTarihi"),
     odaTipiInput: document.getElementById("odaTipi"),
     odaSecimiInput: document.getElementById("odaSecimi"),
     promosyonKoduInput: document.getElementById("promosyonKodu"),
-    adInput: document.getElementById("ad"), // Yeni
-    emailInput: document.getElementById("email"), // Yeni
-    
-    // Fiyat Göstergeleri
+    adInput: document.getElementById("ad"), 
+    emailInput: document.getElementById("email"), 
+
     anlikFiyatGosterge: document.getElementById("anlikFiyatGosterge"),
     tahminiFiyatSpan: document.getElementById("tahminiFiyat"),
-    onayGosterge: document.getElementById("onayGosterge"), // Yeni
-    onayKoduSpan: document.getElementById("onayKodu"), // Yeni
+    onayGosterge: document.getElementById("onayGosterge"),
+    onayKoduSpan: document.getElementById("onayKodu"),
 
-    // Özellikler
     ozellikDeniz: document.getElementById("ozellikDeniz"),
     ozellikBalkon: document.getElementById("ozellikBalkon"),
     ozellikSigara: document.getElementById("ozellikSigara"),
-    
-    // Ek Hizmetler (Yeni)
+
     hizmetKahvalti: document.getElementById("hizmetKahvalti"),
     hizmetTransfer: document.getElementById("hizmetTransfer"),
     hizmetMiniBar: document.getElementById("hizmetMiniBar"),
 
-    // Ödeme
     kartNoInput: document.getElementById('kartNo'),
     sonKullanmaInput: document.getElementById('sonKullanma'),
     cvcInput: document.getElementById('cvc'),
 
-    // Takvim
     takvimOdaTipi: document.getElementById("takvimOdaTipi"),
     takvimOdaNo: document.getElementById("takvimOdaNo"),
     takvimDiv: document.getElementById("takvim"),
     takvimOncekiAy: document.getElementById("takvimOncekiAy"),
     takvimSonrakiAy: document.getElementById("takvimSonrakiAy"),
 
-    // Diğer Paneller
     kullaniciRezervasyonlar: document.getElementById("kullaniciRezervasyonlar"),
     adminRaporPanel: document.getElementById("adminRaporPanel"),
-    raporToplamGelir: document.getElementById("raporToplamGelir"), // Yeni
-    raporRezSayisi: document.getElementById("raporRezSayisi"), // Yeni
-    raporEnCokOdaTip: document.getElementById("raporEnCokOdaTip"), // Yeni
+    raporToplamGelir: document.getElementById("raporToplamGelir"), 
+    raporRezSayisi: document.getElementById("raporRezSayisi"), 
+    raporEnCokOdaTip: document.getElementById("raporEnCokOdaTip"),
 
-    // Düzenleme Modal'ı (editModal)
     editGirisTarihi: document.getElementById("editGirisTarihi"),
     editCikisTarihi: document.getElementById("editCikisTarihi"),
     editOdaTipi: document.getElementById("editOdaTipi"),
     
 };
-
-// ====================================================================
-// YARDIMCI FONKSİYONLAR
-// ====================================================================
 
 /**
  * Giriş tarihini sıfırlanmış saatlerle Date nesnesine çevirir.
@@ -121,16 +105,10 @@ const DOM = {
  */
 function getDateWithoutTime(dateStr) {
     const d = new Date(dateStr);
-    // Saat farklarını elimine etmek için sadece gün, ay ve yıl bazında yeni bir tarih oluşturma
-    // Bu, tarih karşılaştırmalarında GMT/UTC saat dilimi sorununu çözer
     return new Date(d.getFullYear(), d.getMonth(), d.getDate());
 }
 
-/**
- * Kredi kartı numarasının Luhn algoritmasına göre geçerliliğini kontrol eder.
- */
 function luhnKontrol(kartNo) {
-    // Sadece simülasyon amaçlı, her zaman doğru dönmesini sağlar
     return true; 
 }
 
@@ -140,7 +118,6 @@ function showPopup(title, message) {
     if(modalTitle && modalBody) {
         modalTitle.textContent = title;
         modalBody.textContent = message;
-        // Eğer jQuery varsa modalı aç, yoksa sadece konsola yaz
         if (typeof $ !== 'undefined' && $('#popupModal').modal) {
             $('#popupModal').modal('show');
         } else {
@@ -154,16 +131,13 @@ function showConfirmPopup(message, callback) {
     const confirmBtn = document.getElementById('confirmBtn');
     if(modalBody && confirmBtn && typeof $ !== 'undefined' && $('#confirmModal').modal) {
         modalBody.textContent = message;
-        // Önceki olay dinleyicilerini kaldır
         $(confirmBtn).off('click');
-        // Yeni dinleyiciyi ekle
         $(confirmBtn).on('click', () => {
             callback();
             $('#confirmModal').modal('hide');
         });
         $('#confirmModal').modal('show');
     } else {
-        // jQuery yoksa basit JS confirm kullan
         if (confirm(message)) {
             callback();
         }
@@ -179,9 +153,6 @@ function generateReservationCode() {
     return code;
 }
 
-// ====================================================================
-// GİRİŞ/KAYIT/ÇIKIŞ FONKSİYONLARI
-// ====================================================================
 
 function login() {
     const adInput = document.getElementById("kullaniciAd");
@@ -191,7 +162,6 @@ function login() {
     const ad = adInput.value;
     const sifre = sifreInput.value;
     const users = JSON.parse(localStorage.getItem(usersKey)) || [];
-    // Kullanıcıya adSoyad ve email bilgilerini ekle
     const user = users.find(u => u.username === ad && u.password === sifre);
     
     if (user) {
@@ -215,7 +185,6 @@ function register(e) {
     e.preventDefault();
     const username = document.getElementById("regUsername")?.value;
     const password = document.getElementById("regPassword")?.value;
-    // Yeni: Ad Soyad ve E-posta alanlarını al (HTML'e eklenmiş olmalı)
     const adSoyad = document.getElementById("regAdSoyad")?.value || username;
     const email = document.getElementById("regEmail")?.value || `${username}@samba.com`;
 
@@ -227,7 +196,6 @@ function register(e) {
     if (userExists) {
         showPopup("Kayıt Hatası", "Bu kullanıcı adı zaten mevcut.");
     } else {
-        // Yeni bilgileri ekleyerek kullanıcı kaydet
         users.push({ username, password, adSoyad, email }); 
         localStorage.setItem(usersKey, JSON.stringify(users));
         showPopup("Başarılı", "Hesabınız oluşturuldu. Şimdi giriş yapabilirsiniz.");
@@ -243,7 +211,6 @@ function updateUIForUser() {
     const isUser = !!user;
     const isAdmin = user && user.username === "admin";
 
-    // Giriş/Çıkış butonlarını ve alanlarını ayarla
     document.getElementById("loginBtn").style.display = isUser ? "none" : "inline-block";
     document.getElementById("registerBtn").style.display = isUser ? "none" : "inline-block";
     document.getElementById("logoutBtn").style.display = isUser ? "inline-block" : "none";
@@ -252,25 +219,21 @@ function updateUIForUser() {
     const sifreInput = document.getElementById("kullaniciSifre");
     if(adInput) adInput.style.display = isUser ? "none" : "inline-block";
     if(sifreInput) sifreInput.style.display = isUser ? "none" : "inline-block";
-    
-    // Panelleri ayarla
+
     if(DOM.rezervasyonForm) DOM.rezervasyonForm.style.display = isUser ? "block" : "none";
     if(DOM.kullaniciRezervasyonlar) DOM.kullaniciRezervasyonlar.style.display = isUser ? "block" : "none";
     if(DOM.adminRaporPanel) DOM.adminRaporPanel.style.display = isAdmin ? "block" : "none";
 
-    // Fiyat ve onay göstergesini sıfırla/gizle
     if(DOM.anlikFiyatGosterge) DOM.anlikFiyatGosterge.style.display = 'none';
     if(DOM.tahminiFiyatSpan) DOM.tahminiFiyatSpan.textContent = '₺0.00';
     if(DOM.promosyonKoduInput) DOM.promosyonKoduInput.value = '';
-    if(DOM.onayGosterge) DOM.onayGosterge.style.display = 'none'; // Yeni
+    if(DOM.onayGosterge) DOM.onayGosterge.style.display = 'none'; 
 
-    // Yeni: Kullanıcı bilgisi varsa Rezervasyon formunu doldur
     if (isUser) {
         showKullaniciRezervasyonlar(user.username);
         if (isAdmin) {
             gosterAdminRapor(); 
         }
-        // Rezervasyon formundaki Ad ve Email alanlarını doldur
         if (DOM.adInput && user.adSoyad) DOM.adInput.value = user.adSoyad;
         if (DOM.emailInput && user.email) DOM.emailInput.value = user.email;
     } else {
@@ -278,17 +241,12 @@ function updateUIForUser() {
         if (DOM.emailInput) DOM.emailInput.value = '';
     }
     
-    // Takvimi ve Oda Listesini güncelle
     guncelleOdaListesi();
     gosterTakvim(); 
 }
 
-// ====================================================================
-// VALIDASYON VE TARİH MANTIĞI
-// ====================================================================
 
 function kartKontrol(kartNo, sonKullanma, cvc) {
-    // Mevcut kart kontrol mantığı korunmuştur.
     if (!kartNo || !sonKullanma || !cvc) {
         showPopup("Hata", "Lütfen ödeme bilgilerinizi eksiksiz giriniz.");
         return false;
@@ -342,7 +300,6 @@ function tarihKesisiyorMu(giris1Str, cikis1Str, giris2Str, cikis2Str) {
     const start2 = getDateWithoutTime(giris2Str).getTime();
     const end2 = getDateWithoutTime(cikis2Str).getTime();
 
-    // Kesşim kontrolü: [A, B) ve [C, D) için A < D ve C < B olmalıdır.
     return start1 < end2 && end1 > start2;
 }
 
@@ -363,58 +320,45 @@ function fiyatHesapla(girisStr, cikisStr, odaTipi, haftaSonuOran, ozellikler, hi
     
     let cur = getDateWithoutTime(girisStr);
     const end = getDateWithoutTime(cikisStr);
-    const gunSayisi = gunHesapla(girisStr, cikisStr); // Ek hizmetler için kullanılacak
+    const gunSayisi = gunHesapla(girisStr, cikisStr); 
 
-    // 1. Günlük Oda Fiyatı Hesaplama
     while (cur < end) {
-        const gun = cur.getDay(); // 0 (Pazar) - 6 (Cumartesi)
-        const ay = cur.getMonth(); // 0 (Ocak) - 11 (Aralık)
+        const gun = cur.getDay();
+        const ay = cur.getMonth(); 
         let fiyat = fiyatlar[odaTipi];
         
-        // Hafta Sonu Zammı
         if (gun === 6 || gun === 0) fiyat *= (1 + haftaSonuOran);
         
-        // Yeni: Sezon Zammı (Temmuz=6, Ağustos=7)
         if (ay === 6 || ay === 7) fiyat *= (1 + sezonZamOrani);
 
-        // Özellik Çarpanları
         if (ozellikler.deniz) fiyat *= ozellikCarpanlari.deniz;
         if (ozellikler.balkon) fiyat *= ozellikCarpanlari.balkon;
         if (ozellikler.sigara) fiyat *= ozellikCarpanlari.sigara;
         
         toplam += fiyat;
-        
-        // Bir sonraki güne geç
+
         cur.setDate(cur.getDate() + 1);
     }
     
-    // 2. Ek Hizmet Fiyatı Hesaplama
     let hizmetFiyati = 0;
     
-    // Kahvaltı ve Mini Bar: Gece başına (gunSayisi)
     if (hizmetler.kahvalti) hizmetFiyati += ekHizmetlerFiyatlari.kahvalti * gunSayisi; 
     if (hizmetler.miniBar) hizmetFiyati += ekHizmetlerFiyatlari.miniBar * gunSayisi; 
     
-    // Transfer: Tek seferlik (1 kez eklenir)
     if (hizmetler.transfer) hizmetFiyati += ekHizmetlerFiyatlari.transfer;
 
     toplam += hizmetFiyati;
 
-    // 3. İndirim Uygulama
     let sonFiyat = toplam * (1 - indirimOrani);
     return sonFiyat;
 }
 
-// ====================================================================
-// REZERVASYON İŞLEMLERİ
-// ====================================================================
 
 function rezervasyonYap(e) {
     e.preventDefault();
     const user = JSON.parse(localStorage.getItem(currentUserKey));
     if (!user) return showPopup("Hata", "Lütfen giriş yapınız!");
 
-    // Alanların varlığını toplu kontrol et
     if(!DOM.kartNoInput || !DOM.sonKullanmaInput || !DOM.cvcInput || !DOM.girisTarihiInput || !DOM.cikisTarihiInput || !DOM.odaTipiInput || !DOM.odaSecimiInput || !DOM.adInput || !DOM.emailInput) return showPopup("Hata", "Eksik form alanı var.");
 
     const kartNo = DOM.kartNoInput.value;
@@ -437,7 +381,6 @@ function rezervasyonYap(e) {
     const balkon = DOM.ozellikBalkon?.checked || false;
     const sigara = DOM.ozellikSigara?.checked || false;
     
-    // Yeni: Ek hizmetleri al
     const kahvalti = DOM.hizmetKahvalti?.checked || false;
     const transfer = DOM.hizmetTransfer?.checked || false;
     const miniBar = DOM.hizmetMiniBar?.checked || false;
@@ -458,7 +401,7 @@ function rezervasyonYap(e) {
     }
 
     const ozellikler = { deniz, balkon, sigara };
-    const hizmetler = { kahvalti, transfer, miniBar }; // Yeni
+    const hizmetler = { kahvalti, transfer, miniBar }; 
     const toplamFiyat = fiyatHesapla(giris, cikis, odaTipi, haftaSonuZamOrani, ozellikler, hizmetler, indirimOrani);
 
     const mevcut = JSON.parse(localStorage.getItem(rezervasyonlarKey)) || [];
@@ -468,27 +411,25 @@ function rezervasyonYap(e) {
     );
     if (dolu) return showPopup("Hata", "Seçtiğiniz oda bu tarihlerde dolu! Lütfen tekrar kontrol ediniz.");
     
-    const onayKodu = generateReservationCode(); // Yeni: Onay kodu oluştur
+    const onayKodu = generateReservationCode();
 
     const rezervasyon = {
         username: user.username,
-        ad, email, giris, cikis, odaTipi, gunSayisi, toplamFiyat, odaNo, promosyonKodu, onayKodu, // Yeni: onayKodu
+        ad, email, giris, cikis, odaTipi, gunSayisi, toplamFiyat, odaNo, promosyonKodu, onayKodu, 
         ozellikDeniz: deniz, ozellikBalkon: balkon, ozellikSigara: sigara,
-        hizmetKahvalti: kahvalti, hizmetTransfer: transfer, hizmetMiniBar: miniBar, // Yeni: Hizmetler
+        hizmetKahvalti: kahvalti, hizmetTransfer: transfer, hizmetMiniBar: miniBar,
         indirimOrani: indirimOrani
     };
 
     mevcut.push(rezervasyon);
     localStorage.setItem(rezervasyonlarKey, JSON.stringify(mevcut));
-    
-    // Yeni: Başarılı mesajı ve onay kodu gösterimi
+
     let successMessage = `Rezervasyon başarıyla oluşturuldu. Toplam fiyat: ₺${toplamFiyat.toFixed(2)}`;
     if (indirimUygulandi) {
         successMessage += ` (%${indirimOrani * 100} İndirim uygulandı)`;
     }
     showPopup("Başarılı!", successMessage);
     
-    // Onay kodu göstergesini güncelle
     if(DOM.onayGosterge && DOM.onayKoduSpan) {
         DOM.onayKoduSpan.textContent = onayKodu;
         DOM.onayGosterge.style.display = 'block';
@@ -520,7 +461,6 @@ function duzenle(index) {
     if(document.getElementById("editOzellikBalkon")) document.getElementById("editOzellikBalkon").checked = rezervasyon.ozellikBalkon;
     if(document.getElementById("editOzellikSigara")) document.getElementById("editOzellikSigara").checked = rezervasyon.ozellikSigara;
     
-    // Yeni: Ek Hizmetleri doldur
     if(document.getElementById("editHizmetKahvalti")) document.getElementById("editHizmetKahvalti").checked = rezervasyon.hizmetKahvalti || false;
     if(document.getElementById("editHizmetTransfer")) document.getElementById("editHizmetTransfer").checked = rezervasyon.hizmetTransfer || false;
     if(document.getElementById("editHizmetMiniBar")) document.getElementById("editHizmetMiniBar").checked = rezervasyon.hizmetMiniBar || false;
@@ -551,7 +491,6 @@ function guncelleDuzenlemeOdaListesi(seciliOdaNo) {
         if (o.tip !== odaTipi) return false;
         
         const dolu = rezervasyonlar.some((r, i) => {
-            // Düzenlenen rezervasyonun kendisini atla
             if (i === duzenlenenRezervasyonIndexi) return false; 
             if (r.odaNo !== o.no) return false;
             
@@ -588,7 +527,6 @@ function duzenlemeYap(e) {
     const balkon = document.getElementById("editOzellikBalkon")?.checked;
     const sigara = document.getElementById("editOzellikSigara")?.checked;
     
-    // Yeni: Ek Hizmetleri al
     const kahvalti = document.getElementById("editHizmetKahvalti")?.checked || false;
     const transfer = document.getElementById("editHizmetTransfer")?.checked || false;
     const miniBar = document.getElementById("editHizmetMiniBar")?.checked || false;
@@ -602,14 +540,14 @@ function duzenlemeYap(e) {
     
     const indirimOrani = eskiRez.indirimOrani || 0; 
     const ozellikler = { deniz, balkon, sigara };
-    const hizmetler = { kahvalti, transfer, miniBar }; // Yeni
+    const hizmetler = { kahvalti, transfer, miniBar }; 
     const toplamFiyat = fiyatHesapla(giris, cikis, odaTipi, haftaSonuZamOrani, ozellikler, hizmetler, indirimOrani); 
 
     const guncelRezervasyon = {
         ...eskiRez,
         giris, cikis, odaTipi, odaNo, gunSayisi, toplamFiyat,
         ozellikDeniz: deniz, ozellikBalkon: balkon, ozellikSigara: sigara,
-        hizmetKahvalti: kahvalti, hizmetTransfer: transfer, hizmetMiniBar: miniBar, // Yeni
+        hizmetKahvalti: kahvalti, hizmetTransfer: transfer, hizmetMiniBar: miniBar, 
         indirimOrani: indirimOrani 
     };
 
@@ -661,9 +599,6 @@ function adminIptalEt(index) {
     });
 }
 
-// ====================================================================
-// ARAYÜZ GÜNCELLEME VE LİSTELEME
-// ====================================================================
 
 function setMinimumDates() {
     const today = new Date();
@@ -675,7 +610,6 @@ function setMinimumDates() {
     if(DOM.girisTarihiInput) DOM.girisTarihiInput.setAttribute('min', minDate);
     if(DOM.editGirisTarihi) DOM.editGirisTarihi.setAttribute('min', minDate);
 
-    // Giriş tarihi değiştiğinde çıkış tarihinin min değerini ayarla
     if(DOM.girisTarihiInput) DOM.girisTarihiInput.addEventListener('change', () => {
         const start = new Date(DOM.girisTarihiInput.value);
         start.setDate(start.getDate() + 1);
@@ -683,11 +617,10 @@ function setMinimumDates() {
         const nextDay = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, '0')}-${String(start.getDate()).padStart(2, '0')}`;
         if(DOM.cikisTarihiInput) DOM.cikisTarihiInput.setAttribute('min', nextDay);
         
-        // Eğer çıkış tarihi giriş tarihinden önce veya eşitse, çıkış tarihini bir gün sonraya otomatik ayarla
         if (DOM.cikisTarihiInput && DOM.cikisTarihiInput.value && new Date(DOM.cikisTarihiInput.value) <= new Date(DOM.girisTarihiInput.value)) {
              DOM.cikisTarihiInput.value = nextDay;
         }
-        gosterAnlikFiyat(); // Tarih değişince fiyatı güncelle
+        gosterAnlikFiyat();
     });
     
     if(DOM.cikisTarihiInput) DOM.cikisTarihiInput.addEventListener('change', gosterAnlikFiyat);
@@ -712,7 +645,6 @@ function gosterAnlikFiyat() {
     const sigara = DOM.ozellikSigara?.checked || false;
     const ozellikler = { deniz, balkon, sigara };
     
-    // Yeni: Ek hizmetleri al
     const kahvalti = DOM.hizmetKahvalti?.checked || false;
     const transfer = DOM.hizmetTransfer?.checked || false;
     const miniBar = DOM.hizmetMiniBar?.checked || false;
@@ -728,7 +660,7 @@ function gosterAnlikFiyat() {
         }
     }
 
-    const toplamFiyat = fiyatHesapla(giris, cikis, odaTipi, haftaSonuZamOrani, ozellikler, hizmetler, indirimOrani); // Hizmetler eklendi
+    const toplamFiyat = fiyatHesapla(giris, cikis, odaTipi, haftaSonuZamOrani, ozellikler, hizmetler, indirimOrani);
 
     DOM.tahminiFiyatSpan.textContent = `₺${toplamFiyat.toFixed(2)}`;
     
@@ -786,7 +718,6 @@ function showKullaniciRezervasyonlar(username) {
             li.className = "list-group-item d-flex justify-content-between align-items-center";
             const fiyat = typeof rez.toplamFiyat === 'number' ? rez.toplamFiyat : 0;
             
-            // Yeni: Hizmet ve Onay Kodu bilgisini ekle
             let detay = `${rez.giris} - ${rez.cikis} | <strong>Oda: ${rez.odaNo}</strong> (${rez.odaTipi})`;
             if(rez.onayKodu) {
                 detay += ` | <span class="text-secondary small">Kod: ${rez.onayKodu}</span>`;
@@ -810,7 +741,6 @@ function showKullaniciRezervasyonlar(username) {
     });
 }
 
-// Yeni: Tüm Rezervasyon Tablosunu Yöneten Fonksiyon
 function renderAdminTablosu(rezervasyonlar) {
     const tabloBodyElement = document.getElementById("adminRezervasyonTabloBody");
     if (!tabloBodyElement) return; 
@@ -855,7 +785,7 @@ function gosterAdminRapor() {
         odaTipSayilari[rez.odaTipi] = (odaTipSayilari[rez.odaTipi] || 0) + 1;
     });
 
-    // Rapor metriklerini güncelle
+
     if(DOM.raporToplamGelir) DOM.raporToplamGelir.textContent = `₺${toplamGelir.toFixed(2)}`;
     if(DOM.raporRezSayisi) DOM.raporRezSayisi.textContent = rezervasyonlar.length;
 
@@ -869,13 +799,9 @@ function gosterAdminRapor() {
     }
     if(DOM.raporEnCokOdaTip) DOM.raporEnCokOdaTip.textContent = enCokOdaTip;
     
-    // Tabloyu çiz
     renderAdminTablosu(rezervasyonlar); 
 }
 
-// ====================================================================
-// TAKVİM MANTIĞI (Geliştirildi)
-// ====================================================================
 
 function guncelleTakvimOdalari() {
     if(!DOM.takvimOdaTipi || !DOM.takvimOdaNo) return;
@@ -926,7 +852,6 @@ function gosterTakvim() {
     
     const ayinAdi = new Date(currentTakvimYil, currentTakvimAy).toLocaleString('tr-TR', { month: 'long', year: 'numeric' });
     
-    // Yönlendirme butonları ve başlık
     const navDiv = document.createElement('div');
     navDiv.className = 'd-flex justify-content-between align-items-center mb-3 takvim-nav';
     navDiv.innerHTML = `
@@ -943,7 +868,6 @@ function gosterTakvim() {
     const calendarContainer = document.createElement('div');
     calendarContainer.className = 'takvim-container-yeni';
 
-    // Hafta Günlerini Ekle (Pazartesi'den başla)
     const gosterilenHaftaGunleri = ["Pzt", "Sal", "Çar", "Per", "Cum", "Cmt", "Paz"];
     gosterilenHaftaGunleri.forEach(gun => {
         const gunDiv = document.createElement("div");
@@ -952,13 +876,11 @@ function gosterTakvim() {
         calendarContainer.appendChild(gunDiv);
     });
 
-    // Ayın ilk gününden önceki boşlukları doldur
     let ilkGunHaftaGunu = ayinIlkGunu.getDay() === 0 ? 6 : ayinIlkGunu.getDay() - 1; 
     for (let i = 0; i < ilkGunHaftaGunu; i++) {
         calendarContainer.appendChild(document.createElement("div")); 
     }
 
-    // Günleri Ekle
     for (let tarih = new Date(ayinIlkGunu); tarih <= ayinSonGunu; tarih.setDate(tarih.getDate() + 1)) {
         const tarihStr = tarih.toISOString().split('T')[0];
         const gunDiv = document.createElement("div");
@@ -979,8 +901,6 @@ function gosterTakvim() {
 
         odaListesi.forEach(oda => {
             const dolu = rezervasyonlar.some(r => {
-                // Sadece seçili odayı veya tipteki tüm odaları kontrol et
-                // Sadece 1 günlük kesişme kontrolü yeterli
                 return r.odaNo === oda.no && tarihKesisiyorMu(tarihStr, tarihStr, r.giris, r.cikis);
             });
             if (dolu) {
@@ -990,7 +910,6 @@ function gosterTakvim() {
         
         const bosSayisi = toplamOdaSayisi - doluSayisi;
         
-        // Renklendirme ve Bilgi Gösterme
         if (toplamOdaSayisi > 0) {
             if (bosSayisi === 0) {
                 gunDiv.classList.add("dolu-tam"); 
@@ -1003,7 +922,6 @@ function gosterTakvim() {
                 gunDiv.setAttribute('title', `TÜM ODALAR BOŞ`);
             }
             
-            // Eğer "Tüm Odalar" seçiliyse (odaNo yoksa), doluluk bilgisini göster
             if (!odaNo) {
                 const dolulukBilgisi = document.createElement("small");
                 dolulukBilgisi.className = "d-block mt-1";
@@ -1019,26 +937,20 @@ function gosterTakvim() {
 }
 
 
-// ====================================================================
-// OLAY DİNLEYİCİLERİ VE BAŞLANGIÇ AYARLARI
-// ====================================================================
 
 document.addEventListener("DOMContentLoaded", () => {
     setMinimumDates(); 
     updateUIForUser();
     guncelleTakvimOdalari(); 
-    
-    // Geliştirme Notu: HTML'de edit formunun inputlarina change event'i eklenmelidir.
+
     document.getElementById("editForm")?.addEventListener("change", () => {
-        guncelleDuzenlemeOdaListesi(null); // Oda listesini güncel tut
+        guncelleDuzenlemeOdaListesi(null);
     });
 });
 
-// Giriş/Kayıt Olayları
 if(DOM.loginBtn) DOM.loginBtn.onclick = login;
 if(DOM.logoutBtn) DOM.logoutBtn.onclick = logout;
 if(DOM.registerBtn) DOM.registerBtn.onclick = () => {
-    // Kayıt formunu sıfırla ve modalı aç
     document.getElementById("registerForm")?.reset();
     if (typeof $ !== 'undefined' && $('#registerModal').modal) {
         $('#registerModal').modal('show');
@@ -1046,20 +958,17 @@ if(DOM.registerBtn) DOM.registerBtn.onclick = () => {
 };
 if(DOM.registerForm) DOM.registerForm.onsubmit = register;
 
-// Rezervasyon Formu Olayları
 if(DOM.rezervasyonForm) DOM.rezervasyonForm.onsubmit = rezervasyonYap; 
 if(DOM.odaTipiInput) DOM.odaTipiInput.addEventListener("change", guncelleOdaListesi);
 if(DOM.girisTarihiInput) DOM.girisTarihiInput.addEventListener("change", guncelleOdaListesi);
 if(DOM.cikisTarihiInput) DOM.cikisTarihiInput.addEventListener("change", guncelleOdaListesi);
 
-// Fiyat Güncelleme Olayları
 if(DOM.odaTipiInput) DOM.odaTipiInput.addEventListener("change", gosterAnlikFiyat);
 if(DOM.ozellikDeniz) DOM.ozellikDeniz.addEventListener("change", gosterAnlikFiyat);
 if(DOM.ozellikBalkon) DOM.ozellikBalkon.addEventListener("change", gosterAnlikFiyat);
 if(DOM.ozellikSigara) DOM.ozellikSigara.addEventListener("change", gosterAnlikFiyat);
 if(DOM.promosyonKoduInput) DOM.promosyonKoduInput.addEventListener("input", gosterAnlikFiyat);
 
-// Yeni: Ek Hizmetler Fiyat Güncelleme Olayları
 if(DOM.hizmetKahvalti) DOM.hizmetKahvalti.addEventListener("change", gosterAnlikFiyat);
 if(DOM.hizmetTransfer) DOM.hizmetTransfer.addEventListener("change", gosterAnlikFiyat);
 if(DOM.hizmetMiniBar) DOM.hizmetMiniBar.addEventListener("change", gosterAnlikFiyat);
