@@ -38,4 +38,4 @@
 - Vanilla JavaScript
 - localStorage
 
-Stajda boş vakitlerimde geliştirdim.
+Stajda boş vakitlerimin kıymetini bilerek yaptığım uygulama :)
