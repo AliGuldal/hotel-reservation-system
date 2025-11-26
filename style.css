@@ -1,0 +1,400 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #00A8A6;
+    --secondary-color: #7d06cc;
+    --background-light: #F8F9FA;
+    --surface-white: #ffffff;
+    --text-dark: #2C3E50;
+    --text-muted: #7F8C8D;
+    --border-soft: #ECECEC;
+    --shadow-soft: 0 4px 15px rgba(0, 0, 0, 0.05);
+    --accent-success: #2ECC71;
+    --accent-error: #E74C3C;
+
+    --takvim-header-bg: #343a40;
+    --takvim-bos-tam-bg: #d4edda;
+    --takvim-bos-tam-text: #155724;
+    --takvim-dolu-kismen-bg: #fff3cd;
+    --takvim-dolu-kismen-text: #856404;
+    --takvim-dolu-tam-bg: #f8d7da;
+    --takvim-dolu-tam-text: #721c24;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    line-height: 1.6;
+    background-image: url('resimler/sheratontelaviv_CUGC0VhcmE.avif');
+    background-size: cover;
+    background-attachment: fixed;
+    background-position: center;
+    padding-bottom: 50px;
+    position: relative;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.25);
+    z-index: -1;
+}
+
+.container {
+    max-width: 1050px;
+    margin: 40px auto;
+    background-color: var(--surface-white);
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    letter-spacing: -0.5px;
+    margin-bottom: 5px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.slogan {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 40px;
+    font-style: italic;
+}
+
+h2.section-title {
+    font-size: 2.2rem;
+    font-weight: 600;
+    color: var(--text-dark);
+    text-align: left;
+    margin-bottom: 30px;
+    position: relative;
+    padding-left: 15px;
+}
+h2.section-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 6px;
+    height: 80%;
+    background-color: var(--secondary-color);
+    border-radius: 3px;
+}
+
+h3 {
+    color: var(--text-dark);
+    font-size: 1.5rem;
+    font-weight: 500;
+}
+
+h4 {
+    font-weight: 500;
+}
+
+.takvim-ayarlari + h4 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 25px;
+    margin-bottom: 20px;
+    clear: both;
+}
+
+.form-control, input[type="text"], select, textarea, input[type="date"], input[type="email"], input[type="password"] {
+    border: none;
+    border-bottom: 2px solid var(--border-soft);
+    border-radius: 0;
+    padding: 12px 0;
+    margin-bottom: 20px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    background-color: transparent;
+    width: 100%;
+    box-sizing: border-box;
+    line-height: 1.5;
+    min-height: 48px;
+}
+
+.form-control:focus, select:focus, input:focus, textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: none;
+    outline: none;
+}
+
+.odeme-panel-box {
+    border: 1px solid var(--border-soft);
+    border-radius: 12px;
+    background-color: #fcfcfc;
+}
+
+.ozellik-secimleri, .ek-hizmetler-secimleri {
+    padding: 10px 0;
+    border-top: 1px solid var(--border-soft);
+    border-bottom: 1px solid var(--border-soft);
+    margin-bottom: 30px;
+}
+
+.filtre-alani {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px 30px;
+    align-items: flex-end;
+    margin-bottom: 30px;
+    padding: 0;
+}
+
+.filtre-grup {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0;
+    min-width: 150px;
+    width: auto;
+}
+
+.filtre-grup label {
+    color: var(--text-dark);
+    font-weight: 500;
+    white-space: nowrap;
+    margin-bottom: 5px !important;
+    padding: 0 !important;
+    line-height: 1.2;
+    display: block;
+    text-align: left;
+}
+
+.filtre-grup select {
+    margin-bottom: 0 !important;
+    padding: 10px 0 10px 5px !important;
+    font-size: 1rem;
+    color: var(--text-dark);
+    width: 100%;
+    height: auto !important;
+    line-height: 1.2 !important;
+    box-sizing: border-box;
+}
+
+.btn {
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, #00A8A6, #008f8e);
+    color: var(--surface-white);
+}
+.btn-primary:hover {
+    box-shadow: 0 0 15px rgba(0, 168, 166, 0.6);
+}
+
+.btn-success {
+    background-color: var(--accent-success);
+    color: var(--surface-white);
+    font-size: 1.1rem;
+}
+.btn-success:hover {
+    background-color: #27ae60;
+    box-shadow: 0 5px 15px rgba(46, 204, 113, 0.4);
+}
+
+.btn-danger {
+    background-color: var(--accent-error);
+    color: var(--surface-white);
+}
+
+.oda-kartlar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    margin: 40px 0;
+}
+
+.oda-kart {
+    background: var(--surface-white);
+    border-radius: 15px;
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    width: 300px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    border: 1px solid var(--border-soft);
+}
+.oda-kart:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 12px 30px rgba(0, 168, 166, 0.25);
+}
+.oda-kart img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+.oda-kart h3 {
+    text-align: center;
+    padding: 15px 0 5px;
+    margin: 0;
+}
+.oda-kart p {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1.2rem;
+    padding-bottom: 20px;
+    text-align: center;
+}
+
+.takvim-container-yeni {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    border: 1px solid var(--border-soft);
+    padding: 10px;
+    background-color: #f8f8f8;
+    margin-bottom: 20px;
+    max-width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.takvim-gun-header {
+    background-color: var(--takvim-header-bg);
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    padding: 8px 0;
+    font-size: 14px;
+    border-radius: 4px;
+}
+
+.takvim-gun-hucre {
+    border: 1px solid #ccc;
+    min-height: 80px;
+    padding: 7px;
+    font-size: 16px;
+    font-weight: bold;
+    text-align: right;
+    cursor: default;
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.2s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 10px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.bos-tam {
+    background-color: var(--takvim-bos-tam-bg);
+    color: var(--takvim-bos-tam-text);
+}
+
+.dolu-kismen {
+    background-color: var(--takvim-dolu-kismen-bg);
+    color: var(--takvim-dolu-kismen-text);
+}
+
+.dolu-tam {
+    background-color: var(--takvim-dolu-tam-bg);
+    color: var(--takvim-dolu-tam-text);
+}
+
+.takvim-gun-hucre:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.takvim-gun-hucre small {
+    font-weight: normal;
+    font-size: 11px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.7);
+    padding: 2px 0;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.takvim-ayarlari {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    max-width: 850px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.takvim-nav {
+    max-width: 850px;
+    margin: 10px auto;
+}
+
+.list-group-item {
+    border-left: 5px solid var(--secondary-color);
+    margin-bottom: 10px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-soft);
+    background-color: var(--surface-white);
+    padding: 15px 20px;
+    font-weight: 500;
+}
+
+#anlikFiyatGosterge {
+    border: 1px solid var(--primary-color);
+    border-left: 5px solid var(--primary-color);
+    border-radius: 10px;
+    font-size: 1.1rem;
+    padding: 15px 20px;
+    background-color: #f7fcfc;
+    color: var(--text-dark);
+    font-weight: 600;
+}
+
+#anlikFiyatGosterge.alert-success {
+    border-color: var(--accent-success);
+    border-left: 5px solid var(--accent-success);
+    background-color: #f3fff3;
+    color: var(--accent-success);
+}
+
+.kart-destek-info {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    border-bottom: 1px dashed var(--border-soft);
+    padding-bottom: 8px;
+    margin-top: -5px;
+}
+
+@media (max-width: 1100px) {
+    .container { max-width: 95%; }
+}
+
+@media (max-width: 768px) {
+    .container { padding: 25px; margin: 20px auto; }
+    h1 { font-size: 2.2rem; }
+    .oda-kart { width: 100%; max-width: 400px; }
+    .filtre-alani { gap: 15px; align-items: flex-start; }
+    .takvim-container-yeni { max-width: 100%; }
+    .takvim-gun-hucre { min-height: 60px; font-size: 0.8rem; }
+    .takvim-ayarlari { flex-direction: column; max-width: 100%; margin-left: 0; margin-right: 0; }
+    .takvim-nav { flex-direction: row; max-width: 100%; margin-left: 0; margin-right: 0; padding: 0 10px; }
+}
+
+@media (max-width: 576px) {
+    .container { padding: 15px; }
+    .filtre-alani { flex-direction: column; gap: 15px; align-items: stretch; }
+    .filtre-grup { min-width: 100%; }
+}
+
